@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Price Estimator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        h2 {
+            text-align: center;
+        }
+        form {
+            margin-top: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-sizing: border-box;
+        }
+        button {
+            width: 100%;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Car Price Estimator</h2>
+        <form id="car-price-form">
+            <div class="form-group">
+                <label for="year">Year:</label>
+                <input type="number" id="year" name="year" required>
+            </div>
+            <div class="form-group">
+                <label for="mileage">Mileage:</label>
+                <input type="number" id="mileage" name="mileage" required>
+            </div>
+            <div class="form-group">
+                <label for="owners">Number of Owners:</label>
+                <input type="number" id="owners" name="owners" required>
+            </div>
+            <div class="form-group">
+                <label for="purchase_price">Purchase Price:</label>
+                <input type="number" id="purchase_price" name="purchase_price" required>
+            </div>
+            <button type="button" onclick="predictPrice()">Predict Price</button>
+        </form>
+        <div id="result" style="display: none;"></div>
+    </div>
+
+    <script>
+        function predictPrice() {
+            var year = document.getElementById('year').value;
+            var mileage = document.getElementById('mileage').value;
+            var owners = document.getElementById('owners').value;
+            var purchasePrice = document.getElementById('purchase_price').value;
+
+            var data = {
+                'Year': parseInt(year),
+                'Mileage': parseInt(mileage),
+                'Owners': parseInt(owners),
+                'PurchasePrice': parseInt(purchasePrice)
+            };
+
+            fetch('/predict', {
+                method: 'POST',
+                body: JSON.stringify(data),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('result').style.display = 'block';
+                document.getElementById('result').innerHTML = '<p>Predicted Price: Rs.' + data.predicted_price + '</p>';
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
